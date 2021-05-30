@@ -1,7 +1,8 @@
 #mapid { 
-  height: 800px;
-  width: 900px;
+  height: 700px;
+  width: 700px;
 }
+
 
 /* Selectores para la leyenda de leaflet-choropleth */
 .legend {
@@ -36,3 +37,4 @@
 .legend .max {
 	float: right;
 }
+
