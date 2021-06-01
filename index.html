@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Ejemplo de mapa Leaflet con capas de coropletas</title>     
+    <title>Enfermedades en Costa Rica</title>     
 
     <!-- Enlace a biblioteca JQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
@@ -21,17 +21,20 @@
 
 </head>
 <body>
-    <h1>Ejemplo de mapa Leaflet con capas de coropletas</h1>     
+    <h1>Enfermedades en Costa Rica: distribución por cantón de la población según enfermedad.</h1>     
 
-    <a href="https://github.com/tpb729-desarrollosigweb-2021/ejemplo-mapa-leaflet-coropletas">Código fuente</a>
-    <p>
-	<a href="https://github.com/caro-01/Tarea_3.git">Código fuente</a>
+   	<a href="https://github.com/caro-01/Tarea_3.git">Código fuente</a>
     <p>
     
     <!-- Elemento div para contener el mapa Leaflet -->
     <div id="mapid"></div>
 
     <!-- Código JavaScript para generar y manejar el mapa Leaflet -->
-    <script src="js/scripts.js"></script>					
+    <script src="js/scripts.js"></script>			
+
+    <!-- Controles para la opacidad de la capa cancer pulmonar -->
+    <h5>Opacidad de la capa de cancer pulmonar: <span id="span-opacity">0.5</span></h5>
+    <input type='range' id='sld-opacity' min='0' max='1' step='0.1' value='0.5' onchange='updateOpacity();'>
+
 </body>
 </html>

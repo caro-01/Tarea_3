@@ -1,5 +1,5 @@
 // Mapa Leaflet
-var mapa = L.map('mapid').setView([9.9, -84.10], 10);
+var mapa = L.map('mapid').setView([9.9, -84.20], 10);
 
 
 // Definición de capas base
@@ -34,7 +34,7 @@ var capas_base = {
 
 // Conjunto de capas base
 var capas_base = {
-  "Stamen_Terrain": Stamen_Terrain,
+  "Stamen Terrain": Stamen_Terrain,
   "ESRI": esri,
   "OSM": capa_osm,
 };	    
@@ -56,34 +56,30 @@ var capa_enfrespiratoria = L.tileLayer.wms('http://geovision.uned.ac.cr/geoserve
 control_capas.addOverlay(capa_enfrespiratoria, 'Enfermedades respiratorias');
 
 
-
-
-	    
-
-// Capa de coropletas de % de zonas urbanas en cantones de la GAM
-$.getJSON('https://tpb729-desarrollosigweb-2021.github.io/datos/atlasverde/gam-cantones-metricas.geojson', function (geojson) {
-  var capa_cantones_gam_coropletas = L.choropleth(geojson, {
-	  valueProperty: 'zonas_urb',
-	  scale: ['yellow', 'brown'],
-	  steps: 5,
+// Capa de coropletas de % Enfermedades cerebro vasculares
+$.getJSON('https://caro-01.github.io/Tarea_3/capas/cerebro_vascular.geojson', function (geojson) {
+  var capa_cerebro_vascular = L.choropleth(geojson, {
+	  valueProperty: 'inc',
+	  scale: ['turquoise', 'blue'],
+	  steps: 6,
 	  mode: 'q',
 	  style: {
-	    color: '#fff',
-	    weight: 2,
-	    fillOpacity: 0.7
+	    color: '#000',
+	    weight: 1,
+	    fillOpacity: 0.5
 	  },
 	  onEachFeature: function (feature, layer) {
-	    layer.bindPopup('Cantón: ' + feature.properties.canton + '<br>' + 'Zonas urbanas: ' + feature.properties.zonas_urb.toLocaleString() + '%')
+	    layer.bindPopup('Cantón: ' + feature.properties.ncanton + '<br>' + 'Indice: ' + feature.properties.inc.toLocaleString() + '%')
 	  }
   }).addTo(mapa);
-  control_capas.addOverlay(capa_cantones_gam_coropletas, '% de zonas urbanas por cantón de la GAM');	
-
+  control_capas.addOverlay(capa_cerebro_vascular, 'Enfermedadades cerebro vasculares');	
+  
   // Leyenda de la capa de coropletas
   var leyenda = L.control({ position: 'bottomleft' })
   leyenda.onAdd = function (mapa) {
     var div = L.DomUtil.create('div', 'info legend')
-    var limits = capa_cantones_gam_coropletas.options.limits
-    var colors = capa_cantones_gam_coropletas.options.colors
+    var limits = capa_cerebro_vascular.options.limits
+    var colors = capa_cerebro_vascular.options.colors
     var labels = []
 
     // Add min & max
@@ -100,83 +96,16 @@ $.getJSON('https://tpb729-desarrollosigweb-2021.github.io/datos/atlasverde/gam-c
   leyenda.addTo(mapa)
 });
 
+// Capa raster cancer pulmonar
+var capa_pulmonar = L.imageOverlay("https://caro-01.github.io/Tarea_3/capas/cancer_pulmonar.png", 
+	[[11.2180399023489876, -87.1003722490865471], 
+	[5.4992395357559918, -82.5541965633406960]], 
+	{opacity:0.5}
+).addTo(mapa);
+control_capas.addOverlay(capa_pulmonar, 'Cancer pulmonar');
 
-// Capa de coropletas de % de superficie verde en cantones de la GAM
-$.getJSON('https://tpb729-desarrollosigweb-2021.github.io/datos/atlasverde/gam-cantones-metricas.geojson', function (geojson) {
-  var capa_cantones_gam_coropletas_supverde = L.choropleth(geojson, {
-	  valueProperty: 'sup_verde_',
-	  scale: ['#90ee90', '#006400'],
-	  steps: 5,
-	  mode: 'q',
-	  style: {
-	    color: '#fff',
-	    weight: 2,
-	    fillOpacity: 0.7
-	  },
-	  onEachFeature: function (feature, layer) {
-	    layer.bindPopup('Cantón: ' + feature.properties.canton + '<br>' + 'Superficie verde : ' + feature.properties.sup_verde_.toLocaleString() + 'm2 por habitante')
-	  }
-  }).addTo(mapa);
-  control_capas.addOverlay(capa_cantones_gam_coropletas_supverde, 'Superficie verde por hab. por cantón de la GAM');	
+function updateOpacity() {
+  document.getElementById("span-opacity").innerHTML = document.getElementById("sld-opacity").value;
+  capa_pulmonar.setOpacity(document.getElementById("sld-opacity").value);
+}
 
-  // Leyenda de la capa de coropletas
-  var leyenda_supverde = L.control({ position: 'bottomleft' })
-  leyenda_supverde.onAdd = function (mapa) {
-    var div = L.DomUtil.create('div', 'info legend')
-    var limits = capa_cantones_gam_coropletas_supverde.options.limits
-    var colors = capa_cantones_gam_coropletas_supverde.options.colors
-    var labels = []
-
-    // Add min & max
-    div.innerHTML = '<div class="labels"><div class="min">' + limits[0] + '</div> \
-			<div class="max">' + limits[limits.length - 1] + '</div></div>'
-
-    limits.forEach(function (limit, index) {
-      labels.push('<li style="background-color: ' + colors[index] + '"></li>')
-    })
-
-    div.innerHTML += '<ul>' + labels.join('') + '</ul>'
-    return div
-  }
-  leyenda_supverde.addTo(mapa)
-});
-
-// Capa de coropletas de cancer pulmon por cantón
-$.getJSON('https://github.com/caro-01/Tarea_3/tree/master/capas/cancer_estomago.geojson', function (geojson) {
-  var capa_cantones_coropletas_cancer = L.choropleth(geojson, {
-	  valueProperty: 'codnum',
-	  scale: ['#90ee90', '#006400'],
-	  steps: 5,
-	  mode: 'q',
-	  style: {
-	    color: '#fff',
-	    weight: 2,
-	    fillOpacity: 0.7
-	  },
-	  onEachFeature: function (feature, layer) {
-	    layer.bindPopup('Cantón: ' + feature.properties.ncanton + '<br>' + 'Indice : ' + feature.properties.inc_.toLocaleString())
-	  }
-  }).addTo(mapa);
-  control_capas.addOverlay(capa_cantones_coropletas_cancer, 'incidencan carcer por cantón');	
-
-  // Leyenda de la capa de coropletas
-  var leyenda_cancer = L.control({ position: 'bottomleft' })
-  leyenda_supverde.onAdd = function (mapa) {
-    var div = L.DomUtil.create('div', 'info legend')
-    var limits = capa_cantones_coropletas_cancer.options.limits
-    var colors = capa_cantones_coropletas_cancer.options.colors
-    var labels = []
-
-    // Add min & max
-    div.innerHTML = '<div class="labels"><div class="min">' + limits[0] + '</div> \
-			<div class="max">' + limits[limits.length - 1] + '</div></div>'
-
-    limits.forEach(function (limit, index) {
-      labels.push('<li style="background-color: ' + colors[index] + '"></li>')
-    })
-
-    div.innerHTML += '<ul>' + labels.join('') + '</ul>'
-    return div
-  }
-  leyenda_cancer.addTo(mapa)
-});
