@@ -16,12 +16,48 @@ var capas_base = {
   "OSM": capa_osm
 };	    
 
+// Otra capa base
+    var Stamen_Terrain = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.{ext}', {
+	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+	subdomains: 'abcd',
+	minZoom: 0,
+	maxZoom: 18,
+	ext: 'png'
+    }).addTo(mapa);
+	
+// Otra capa base
+    var esri = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+	}
+	).addTo(mapa);	
+	
 
+// Conjunto de capas base
+var capas_base = {
+  "Stamen_Terrain": Stamen_Terrain,
+  "ESRI": esri,
+  "OSM": capa_osm,
+};	    
+	    
 // Control de capas
 control_capas = L.control.layers(capas_base).addTo(mapa);	
 
 // Control de escala
 L.control.scale().addTo(mapa);
+
+// Agregar capa WMS
+var capa_enfrespiratoria = L.tileLayer.wms('http://geovision.uned.ac.cr/geoserver/vigilanciasalud/wms?', {
+  layers: 'respiratoria2015_2017',
+  format: 'image/png',
+  transparent: true
+}).addTo(mapa);
+
+// Se agrega al control de capas como de tipo "overlay"
+control_capas.addOverlay(capa_enfrespiratoria, 'Enfermedades respiratorias');
+
+
+
+
 	    
 
 // Capa de coropletas de % de zonas urbanas en cantones de la GAM
